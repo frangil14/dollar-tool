@@ -9,7 +9,23 @@ import TileView from 'devextreme-react/tile-view';
 import { data } from './data.js';
 import axios from "axios";
 
+import {
+  Chart,
+  Title,
+  CommonSeriesSettings,
+  Series,
+  Legend,
+  ArgumentAxis,
+  ValueAxis
+} from 'devextreme-react/chart';
+
 export default function App() {
+
+  const [selectedItem, setSelectedItem] = useState(data[0]);
+  const [dolarBluePrice, setDolarBluePrice] = useState(0);
+  const [criptoDolarPrice, setCriptoDolarPrice] = useState([]);
+  const [historicalData, setHistoricalData] = useState([]);
+  document.title = 'Dollar tool';
 
     const dataSourceOptions = {
       store: new ArrayStore({
@@ -19,7 +35,7 @@ export default function App() {
       group: 'Coin',
       searchExpr: ['Platform_Name', 'Coin'],
       sort: 'Price',
-      desc: false
+      // desc: false
     };
 
     const listAttrs = { class: 'list' };
@@ -29,7 +45,7 @@ export default function App() {
         style: 'currency',
         currency: 'ARS',
         minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
+        maximumFractionDigits: 2,
       },
     ).format;
 
@@ -46,7 +62,7 @@ export default function App() {
   function renderListItem(item) {
     switch (item.Platform_Name) {
       case 'Dolar Blue':
-        item.Price = dolarBluePrice.dollar_blue_average_price;
+        item.Price = (dolarBluePrice.dollar_blue_min+dolarBluePrice.dollar_blue_max)/2;
         break;
       case 'Binance P2P':
         item.Price = criptoDolarPrice.dollar_cripto_binance;
@@ -76,15 +92,18 @@ export default function App() {
     return (
       <div
         className="tile-image"
-        style={{ backgroundImage: `url(images/hotels/${item.FileName})` }}
+        style={{ backgroundImage: `url(${item.FileName})` }}
       />
     );
   }
 
+  function returnMaxMinDolarBlue(item) {
+    if (item.Platform_Name === "Dolar Blue")
+    {
+      return dolarBluePrice.dollar_blue_min + "/" + dolarBluePrice.dollar_blue_max
+    }
+  }
 
-  const [selectedItem, setSelectedItem] = useState(data[0]);
-  const [dolarBluePrice, setDolarBluePrice] = useState(0);
-  const [criptoDolarPrice, setCriptoDolarPrice] = useState([]);
 
   useEffect(() => {
       {axios("../API/dollar_cripto")
@@ -93,6 +112,10 @@ export default function App() {
         {axios("../API/dollar_blue")
         .then((response) => response.data)
         .then((data) => setDolarBluePrice(data));}
+        {axios("../API/get_historic_data")
+        .then((response) => response.data)
+        .then((data) => setHistoricalData(data));};
+        setSelectedItem(data[0]);
   }, []);
 
   useEffect(() => {
@@ -102,7 +125,25 @@ export default function App() {
       {axios("../API/dollar_blue")
       .then((response) => response.data)
       .then((data) => setDolarBluePrice(data));}
-}, selectedItem);
+}, [selectedItem]);
+
+const getChartValue = (item) =>
+{
+  let value = "";
+  switch (item.Platform_Name) {
+    case 'Dolar Blue':
+      value = "dolarBlue";
+      break;
+    case 'Binance P2P':
+      value = "dolarBinance"
+      break;
+    case 'Lemon Cash':
+      value = "dolarLemon"
+      break;
+  }
+    return value
+}
+
 
   // ----------------------------------------------------------------
   
@@ -147,9 +188,25 @@ export default function App() {
             elementAttr={tileViewAttrs}
           />
 
-          <div className="address">{selectedItem.Postal_Code}, {selectedItem.Address}</div>
+          <div className="buyandsell">{returnMaxMinDolarBlue(selectedItem)}</div>
           <div className="description">{selectedItem.Description}</div>
+
+          <div className="down">
+        <Chart
+        id="chart"
+        dataSource={historicalData}
+      >
+        <Title text={selectedItem.Platform_Name} subtitle="Rendimiento del último mes" />
+        <CommonSeriesSettings argumentField="timestamp" type="line" />
+        <Series valueField={getChartValue(selectedItem)} name="historicValues" />
+        <Legend visible={false} />
+        <ArgumentAxis argumentType="datetime" />
+        <ValueAxis position="right" />
+      </Chart>
+      </div>
+
         </div>
+
       </React.Fragment>
     );
   }

@@ -1,13 +1,15 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-import flask
 from flask_compress import Compress
 from werkzeug.exceptions import HTTPException
-import simplejson
+import flask
 import logging
 import os
+import simplejson
 
-from app.modules.dollar_blue import routes as routes_dollar_blue
 from app.modules.cripto import routes as routes_dollar_cripto
+from app.modules.dollar_blue import routes as routes_dollar_blue
+from app.modules.historic_data import routes as routes_historic_data
+from app.modules.historic_data.views import write_historic_data
 
 # -------------------------- Initialize logger file ------------------------------
 ROOT_PATH = os.getcwd()
@@ -24,7 +26,7 @@ logger.addHandler(file_handler)
 
 # -------------------------- Initialize Schedule for Cleaning ------------------------------
 scheduler = BackgroundScheduler()
-#scheduler.add_job(func=clean_parquets, trigger="interval", seconds=86400)
+scheduler.add_job(func=write_historic_data, trigger="interval", seconds=3600)
 scheduler.start()
 
 
@@ -36,8 +38,7 @@ Compress(app)
 # ---------------------------- Routes --------------------------------------------
 routes_dollar_blue.add_routes_module(app, logger)
 routes_dollar_cripto.add_routes_module(app, logger)
-
-
+routes_historic_data.add_routes_module(app, logger)
 
 # ---------------------------- Start Parse Exception --------------------------------------------
 @app.errorhandler(Exception)
