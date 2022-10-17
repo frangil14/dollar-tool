@@ -2,7 +2,7 @@
 export const data = [{
     Id: 1,
     Platform_Name: 'Dolar Blue',
-    Description: 'Cotización dólar billete libre. Promedio entre valores de Compra-Venta, basado en dolarhoy.com',
+    Description: 'Cotización dólar billete libre. Promedio entre valores de Compra-Venta, basado en los sitios dolarhoy.com y cronista.com',
     Platform_Class: 'Platinum',
     Coin: 'USDT',
     Images: [{
