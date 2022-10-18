@@ -46,17 +46,20 @@ def get_price_cronista(*args, **kwds,):
     data = match_results.group()
     data = re.sub("<.*?>", "", data) # Remove HTML tags
 
-    data = re.findall(r'\d+\,\d+', data)
+    data = re.findall(r'\d+\,\d', data)
 
     numeric_data = [float(x.replace(",", ".")) for x in data]
 
-    filtered = filter(lambda score: score >= sum(numeric_data) / len(numeric_data), numeric_data)
+    filtered = filter(lambda score: score >= (sum(numeric_data) / len(numeric_data)/2), numeric_data)
 
     return list(filtered)
 
 def get_dollar_price():
     dolarhoy_price = get_price_dolarhoy()
     cronista_price = get_price_cronista()
+
+    #print(dolarhoy_price)
+    #print(cronista_price)
 
     minimum = (min(dolarhoy_price) + min(cronista_price))/len(KEY_WORDS)
     maximum = (max(dolarhoy_price) + max(cronista_price))/len(KEY_WORDS)
