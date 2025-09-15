@@ -1,10 +1,7 @@
 from flask import Response
 import simplejson
-from .config import CRIPTOYA_URL, CRIPTOYA_URL_BINANCE
+from .config import CRIPTOYA_URL
 import requests
-
-# TESTING
-# http://localhost:5000/API/dollar_cripto
 
 
 def get_dollar_cripto(*args, **kwds):
@@ -25,8 +22,7 @@ def get_lemon_price():
     return float(lemon["totalBid"])
 
 def get_binance_price():
-    response = requests.get(CRIPTOYA_URL_BINANCE)
+    response = requests.get(CRIPTOYA_URL)
     data = response.json()
-    data = data["data"]
-    numeric_data = [float(x["adv"]["price"]) for x in data]
-    return sum(numeric_data) / len(numeric_data)
+    binance = data["binancep2p"]
+    return float(binance["totalBid"])
