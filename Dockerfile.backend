@@ -1,0 +1,71 @@
+# Multi-stage build for optimized size and caching
+FROM python:3.9-alpine3.18 as builder
+
+LABEL maintainer="dollar-tool" \
+      description="Dollar Tool Backend - Builder Stage"
+
+# Install build dependencies
+RUN apk add --no-cache --virtual .build-deps \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    && rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Production stage
+FROM python:3.9-alpine3.18 as production
+
+LABEL maintainer="dollar-tool" \
+      description="Dollar Tool Backend - Production"
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    curl \
+    tzdata \
+    && rm -rf /var/cache/apk/*
+
+# Create non-root user
+RUN adduser -D -s /bin/sh -u 1000 appuser
+
+WORKDIR /app
+
+# Copy compiled dependencies from builder
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Environment variables
+ENV FLASK_APP=run.py \
+    FLASK_DEBUG=False \
+    PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    TZ=UTC
+
+# Create logs directory
+RUN mkdir -p /app/logs && chown appuser:appuser /app/logs
+
+# Copy application code
+COPY --chown=appuser:appuser app/ ./app/
+COPY --chown=appuser:appuser run.py ./
+
+# Configure log file permissions
+RUN touch /app/logfile.log && chown appuser:appuser /app/logfile.log
+
+USER appuser
+
+EXPOSE 5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/ || exit 1
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "run:app"]

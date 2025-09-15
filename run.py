@@ -26,7 +26,7 @@ logger.addHandler(file_handler)
 
 # -------------------------- Initialize Schedule for Cleaning ------------------------------
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=write_historic_data, trigger="interval", seconds=3600)
+scheduler.add_job(func=write_historic_data, trigger="interval", seconds=30, kwargs={'logger': logger})
 scheduler.start()
 
 
@@ -69,7 +69,7 @@ def handle_exception(e):
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-    return f"<h1>HOME</h1><p>This site is a prototype API for dollar-tool application.</p>"
+    return "<h1>HOME</h1><p>This site is a prototype API for dollar-tool application.</p>"
 
 
 if __name__ == '__main__':
