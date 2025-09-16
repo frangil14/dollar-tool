@@ -17,6 +17,7 @@ Argentina has experienced significant economic instability in recent years, with
 - **Multiple data sources**: DolarHoy, Cronista, Binance P2P, Lemon Cash
 - **Historical data visualization** with interactive charts
 - **Auto-refresh** with manual control
+- **Dark/Light mode** with system preference detection
 - **Responsive design** with modern UI
 - **Docker containerized** for easy deployment
 
