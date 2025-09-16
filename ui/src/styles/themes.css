@@ -93,10 +93,60 @@ body {
   background-color: var(--color-bg-secondary);
 }
 
-[data-theme="dark"] .dx-list-item.dx-state-selected {
-  background-color: var(--color-accent-blue);
-  color: #ffffff;
+/* PriceList selected item - Multiple selectors for DevExtreme */
+[data-theme="dark"] .dx-list-item.dx-state-selected,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content * {
+  background-color: var(--color-bg-secondary) !important;
+  border-left: 4px solid var(--color-accent-blue) !important;
+  border-radius: 4px !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
+
+/* Force the selected state */
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected {
+  background-color: var(--color-bg-secondary) !important;
+  border-left: 4px solid var(--color-accent-blue) !important;
+  border-radius: 4px !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure text is visible */
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content .platform,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content .platform .name,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content .price-container,
+[data-theme="dark"] .dx-list .dx-list-item.dx-state-selected .dx-list-item-content .price-container .price {
+  color: var(--color-text-primary) !important;
+}
+
+/* Custom selected item class - elegant blue border */
+.selected-item {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-accent-blue) !important;
+  color: var(--color-text-primary) !important;
+  padding: 8px !important;
+  margin: 2px 0 !important;
+}
+
+/* Clean - removed all previous complex selectors */
+
+/* Apply selection styles only in dark mode */
+[data-theme="dark"] .dx-item.dx-list-item.dx-list-item-selected {
+  border: 1px solid #007bff !important;
+  border-radius: 4px !important;
+}
+
+/* Ensure text remains visible in dark mode selected items */
+[data-theme="dark"] .dx-item.dx-list-item.dx-list-item-selected .platform .name,
+[data-theme="dark"] .dx-item.dx-list-item.dx-list-item-selected .price-container .price {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
 
 [data-theme="dark"] .dx-chart {
   background-color: var(--color-bg-primary);
@@ -118,3 +168,54 @@ body {
 [data-theme="dark"] .dx-chart-legend {
   color: var(--color-text-primary);
 }
+
+/* Search input and messages for both themes */
+.dx-textbox {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.dx-textbox .dx-texteditor-input {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.dx-textbox .dx-texteditor-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.dx-textbox .dx-texteditor-input:focus {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* No data message - Multiple selectors for better coverage */
+.dx-datagrid-nodata,
+.dx-list-nodata,
+.dx-list .dx-empty-message,
+.dx-list .dx-empty,
+.dx-list .dx-empty-message .dx-empty-message-content,
+.dx-list .dx-empty .dx-empty-message-content,
+.dx-list .dx-empty-message .dx-empty-message-text,
+.dx-list .dx-empty .dx-empty-message-text {
+  color: var(--color-text-primary) !important;
+}
+
+/* Additional DevExtreme no data selectors */
+[data-theme="dark"] .dx-datagrid-nodata,
+[data-theme="dark"] .dx-list-nodata,
+[data-theme="dark"] .dx-list .dx-empty-message,
+[data-theme="dark"] .dx-list .dx-empty,
+[data-theme="dark"] .dx-list .dx-empty-message .dx-empty-message-content,
+[data-theme="dark"] .dx-list .dx-empty .dx-empty-message-content,
+[data-theme="dark"] .dx-list .dx-empty-message .dx-empty-message-text,
+[data-theme="dark"] .dx-list .dx-empty .dx-empty-message-text {
+  color: var(--color-text-primary) !important;
+}
+
+/* Search icon */
+.dx-textbox .dx-icon-search {
+  color: var(--color-text-secondary);
+}
+
