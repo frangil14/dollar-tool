@@ -40,6 +40,7 @@ const StatusBar = ({
 
   return (
     <div
+      className="statusbar"
       style={{
         position: "fixed",
         bottom: "10px",
@@ -51,8 +52,6 @@ const StatusBar = ({
         display: "flex",
         alignItems: "center",
         gap: "10px",
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        color: "#ffffff",
       }}
     >
       <div>

@@ -8,8 +8,10 @@ import {
   ArgumentAxis,
   ValueAxis,
 } from "devextreme-react/chart";
+import { useTheme } from "../contexts/ThemeContext";
 
 const PriceChart = ({ selectedItem, historicalData }) => {
+  const { isDarkMode } = useTheme();
   const getChartValue = (platformName) => {
     switch (platformName) {
       case "Blue Dollar":
@@ -28,7 +30,15 @@ const PriceChart = ({ selectedItem, historicalData }) => {
       <Chart id="chart" dataSource={historicalData}>
         <Title
           text={selectedItem.Platform_Name}
-          subtitle="Historical Performance"
+          subtitle={{
+            text: "Historical Performance",
+            font: {
+              color: isDarkMode ? "#b3b3b3" : "#6c757d",
+            },
+          }}
+          font={{
+            color: isDarkMode ? "#ffffff" : "#212529",
+          }}
         />
         <CommonSeriesSettings argumentField="timestamp" type="line" />
         <Series

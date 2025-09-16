@@ -88,6 +88,7 @@
 .price-container {
   float: right;
   padding-top: 13px;
+  margin-right: 60px; /* Move price to the left to avoid overlap with toggle */
 }
 
 .price-container > div {

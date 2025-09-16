@@ -1,0 +1,120 @@
+/* Dark Mode Implementation - Best Practices */
+
+/* CSS Variables for Light Theme (Default) */
+:root {
+  /* Text colors */
+  --color-text-primary: #212529;
+  --color-text-secondary: #6c757d;
+  --color-text-muted: #868e96;
+  
+  /* Background colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #e9ecef;
+  
+  /* Border colors */
+  --color-border: #dee2e6;
+  
+  /* Accent colors */
+  --color-accent-blue: #007bff;
+  --color-accent-green: #28a745;
+  --color-accent-yellow: #ffc107;
+  --color-accent-red: #dc3545;
+  --color-accent-orange: #fd7e14;
+  
+  /* Status colors */
+  --color-statusbar-bg: rgba(0, 0, 0, 0.4);
+  --color-statusbar-text: #ffffff;
+}
+
+/* CSS Variables for Dark Theme */
+[data-theme="dark"] {
+  /* Text colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b3b3b3;
+  --color-text-muted: #999999;
+  
+  /* Background colors */
+  --color-bg-primary: #1a1a1a;
+  --color-bg-secondary: #2d2d2d;
+  --color-bg-tertiary: #404040;
+  
+  /* Border colors */
+  --color-border: #404040;
+  
+  /* Accent colors */
+  --color-accent-blue: #4dabf7;
+  --color-accent-green: #51cf66;
+  --color-accent-yellow: #ffd43b;
+  --color-accent-red: #ff6b6b;
+  --color-accent-orange: #ff922b;
+  
+  /* Status colors */
+  --color-statusbar-bg: rgba(255, 255, 255, 0.1);
+  --color-statusbar-text: #ffffff;
+}
+
+/* Apply theme variables to body */
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom components that need theme styling */
+.statusbar {
+  background-color: var(--color-statusbar-bg) !important;
+  color: var(--color-statusbar-text) !important;
+}
+
+/* DevExtreme theme overrides for dark mode */
+[data-theme="dark"] .dx-widget {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .dx-list {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .dx-list-item {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .dx-list-item:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+[data-theme="dark"] .dx-list-item.dx-state-selected {
+  background-color: var(--color-accent-blue);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .dx-chart {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .dx-chart-title {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .dx-chart-subtitle {
+  color: var(--color-text-secondary) !important;
+}
+
+[data-theme="dark"] .dx-chart-axis {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .dx-chart-legend {
+  color: var(--color-text-primary);
+}

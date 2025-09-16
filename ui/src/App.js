@@ -1,5 +1,6 @@
 import "devextreme/dist/css/dx.common.css";
 import "devextreme/dist/css/dx.light.css";
+import "./styles/themes.css";
 import React, { useState } from "react";
 
 import { data } from "./data.js";
@@ -10,6 +11,8 @@ import PriceChart from "./components/PriceChart";
 import StatusBar from "./components/StatusBar";
 import ErrorDisplay from "./components/ErrorDisplay";
 import StatusBanner from "./components/StatusBanner";
+import ThemeToggle from "./components/ThemeToggle";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 const AppContent = () => {
   const [selectedItem, setSelectedItem] = useState(data[0]);
@@ -70,6 +73,9 @@ const AppContent = () => {
 
   return (
     <React.Fragment>
+      {/* Theme toggle button */}
+      <ThemeToggle />
+
       {/* Partial errors banner */}
       <StatusBanner errors={errors} onRetry={handleRefresh} />
 
@@ -102,5 +108,9 @@ const AppContent = () => {
 };
 
 export default function App() {
-  return <AppContent />;
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
 }
