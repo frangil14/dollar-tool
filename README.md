@@ -61,7 +61,7 @@ This application uses **optimized multi-stage Docker builds** for both backend a
 
 2. **Build and run with Docker Compose**
    ```bash
-   docker-compose up --build
+   docker-compose up
    ```
 
 3. **Access the application**
