@@ -110,6 +110,24 @@
   height: 440px;
 }
 
+.down {
+  margin-bottom: 80px; /* Add space for the StatusBar */
+  padding: 20px;
+  min-height: 480px; /* Ensure minimum height for the chart */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .down {
+    margin-bottom: 100px; /* More space on mobile */
+    padding: 15px;
+  }
+  
+  #chart {
+    height: 350px; /* Smaller chart on mobile */
+  }
+}
+
 .tooltip {
   width: 300px;
 }

@@ -43,15 +43,19 @@ const StatusBar = ({
       className="statusbar"
       style={{
         position: "fixed",
-        bottom: "10px",
-        right: "10px",
-        padding: "10px 15px",
-        borderRadius: "5px",
-        fontSize: "12px",
+        bottom: "20px",
+        right: "20px",
+        padding: "4px 8px",
+        borderRadius: "6px",
+        fontSize: "11px",
         zIndex: 1000,
         display: "flex",
         alignItems: "center",
-        gap: "10px",
+        gap: "8px",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        color: "#ffffff",
+        backdropFilter: "blur(3px)",
+        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
       }}
     >
       <div>
@@ -61,7 +65,7 @@ const StatusBar = ({
         </span>
       </div>
 
-      <div style={{ display: "flex", gap: "5px" }}>
+      <div style={{ display: "flex", gap: "4px" }}>
         <button
           onClick={onRefresh}
           disabled={loading}
@@ -69,18 +73,19 @@ const StatusBar = ({
             background: "#007acc",
             color: "white",
             border: "none",
-            padding: "5px 10px",
+            padding: "3px 6px",
             borderRadius: "3px",
             cursor: loading ? "not-allowed" : "pointer",
             opacity: loading ? 0.5 : 1,
+            fontSize: "10px",
           }}
         >
           {loading ? (
-            <span role="img" aria-label="Loading">
+            <span role="img" aria-label="Loading" style={{ fontSize: "15px" }}>
               ⏳
             </span>
           ) : (
-            <span role="img" aria-label="Refresh">
+            <span role="img" aria-label="Refresh" style={{ fontSize: "15px" }}>
               🔄
             </span>
           )}
@@ -92,17 +97,18 @@ const StatusBar = ({
             background: isAutoRefreshActive ? "#dc3545" : "#28a745",
             color: "white",
             border: "none",
-            padding: "5px 10px",
+            padding: "3px 6px",
             borderRadius: "3px",
             cursor: "pointer",
+            fontSize: "10px",
           }}
         >
           {isAutoRefreshActive ? (
-            <span role="img" aria-label="Pause">
+            <span role="img" aria-label="Pause" style={{ fontSize: "15px" }}>
               ⏸️
             </span>
           ) : (
-            <span role="img" aria-label="Play">
+            <span role="img" aria-label="Play" style={{ fontSize: "15px" }}>
               ▶️
             </span>
           )}
