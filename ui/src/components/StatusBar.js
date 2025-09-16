@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const StatusBar = ({
   lastUpdated,
@@ -8,18 +8,31 @@ const StatusBar = ({
   onStartAutoRefresh,
   isAutoRefreshActive = true,
 }) => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update current time every second for live counter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const formatLastUpdated = (date) => {
     if (!date) return "Never";
 
-    const now = new Date();
-    const diff = now - date;
+    const diff = currentTime - date;
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
 
     if (seconds < 60) {
       return `${seconds} seconds ago`;
     } else if (minutes < 60) {
       return `${minutes} minutes ago`;
+    } else if (hours < 24) {
+      return `${hours} hours ago`;
     } else {
       return date.toLocaleTimeString();
     }
@@ -31,8 +44,6 @@ const StatusBar = ({
         position: "fixed",
         bottom: "10px",
         right: "10px",
-        background: "rgba(0, 0, 0, 0.8)",
-        color: "white",
         padding: "10px 15px",
         borderRadius: "5px",
         fontSize: "12px",
@@ -40,6 +51,8 @@ const StatusBar = ({
         display: "flex",
         alignItems: "center",
         gap: "10px",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        color: "#ffffff",
       }}
     >
       <div>
@@ -63,7 +76,15 @@ const StatusBar = ({
             opacity: loading ? 0.5 : 1,
           }}
         >
-          {loading ? "⏳" : "🔄"}
+          {loading ? (
+            <span role="img" aria-label="Loading">
+              ⏳
+            </span>
+          ) : (
+            <span role="img" aria-label="Refresh">
+              🔄
+            </span>
+          )}
         </button>
 
         <button
@@ -77,7 +98,15 @@ const StatusBar = ({
             cursor: "pointer",
           }}
         >
-          {isAutoRefreshActive ? "⏸️" : "▶️"}
+          {isAutoRefreshActive ? (
+            <span role="img" aria-label="Pause">
+              ⏸️
+            </span>
+          ) : (
+            <span role="img" aria-label="Play">
+              ▶️
+            </span>
+          )}
         </button>
       </div>
     </div>

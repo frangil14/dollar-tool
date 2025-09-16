@@ -1,7 +1,7 @@
 import React from "react";
 import TileView from "devextreme-react/tile-view";
 
-const PriceCard = ({ selectedItem, dolarBluePrice }) => {
+const PriceCard = ({ selectedItem, dolarBluePrice, criptoDolarPrice }) => {
   const tileViewAttrs = { class: "tile" };
 
   const formatCurrency = new Intl.NumberFormat("en-US", {
@@ -14,15 +14,19 @@ const PriceCard = ({ selectedItem, dolarBluePrice }) => {
   const getPriceForSelectedItem = () => {
     switch (selectedItem.Platform_Name) {
       case "Blue Dollar":
-        return (
-          (dolarBluePrice.dollar_blue_min + dolarBluePrice.dollar_blue_max) / 2
-        );
+        if (dolarBluePrice.dollar_blue_min && dolarBluePrice.dollar_blue_max) {
+          return (
+            (dolarBluePrice.dollar_blue_min + dolarBluePrice.dollar_blue_max) /
+            2
+          );
+        }
+        return null;
       case "Binance P2P":
-        return dolarBluePrice.dollar_blue_min; // Placeholder - will be updated with real data
+        return criptoDolarPrice.dollar_cripto_binance || null;
       case "Lemon Cash":
-        return dolarBluePrice.dollar_blue_min; // Placeholder - will be updated with real data
+        return criptoDolarPrice.dollar_cripto_lemon || null;
       default:
-        return 0;
+        return null;
     }
   };
 
@@ -36,8 +40,14 @@ const PriceCard = ({ selectedItem, dolarBluePrice }) => {
   };
 
   const getMaxMinDolarBlue = () => {
-    if (selectedItem.Platform_Name === "Blue Dollar") {
-      return `${dolarBluePrice.dollar_blue_min}/${dolarBluePrice.dollar_blue_max}`;
+    if (
+      selectedItem.Platform_Name === "Blue Dollar" &&
+      dolarBluePrice.dollar_blue_min &&
+      dolarBluePrice.dollar_blue_max
+    ) {
+      const min = formatCurrency(dolarBluePrice.dollar_blue_min);
+      const max = formatCurrency(dolarBluePrice.dollar_blue_max);
+      return `Buy: ${min} | Sell: ${max}`;
     }
     return null;
   };
@@ -53,7 +63,17 @@ const PriceCard = ({ selectedItem, dolarBluePrice }) => {
         </div>
         <div className="price-container">
           <div className="price">
-            {formatCurrency(getPriceForSelectedItem())}
+            {getPriceForSelectedItem()
+              ? formatCurrency(getPriceForSelectedItem())
+              : "N/A"}
+            {selectedItem.Platform_Name === "Blue Dollar" &&
+              getPriceForSelectedItem() && (
+                <span
+                  style={{ fontSize: "12px", opacity: 0.7, marginLeft: "8px" }}
+                >
+                  (average)
+                </span>
+              )}
           </div>
         </div>
       </div>

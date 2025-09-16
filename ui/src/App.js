@@ -8,8 +8,10 @@ import PriceList from "./components/PriceList";
 import PriceCard from "./components/PriceCard";
 import PriceChart from "./components/PriceChart";
 import StatusBar from "./components/StatusBar";
+import ErrorDisplay from "./components/ErrorDisplay";
+import StatusBanner from "./components/StatusBanner";
 
-export default function App() {
+const AppContent = () => {
   const [selectedItem, setSelectedItem] = useState(data[0]);
   const [isAutoRefreshActive, setIsAutoRefreshActive] = useState(true);
 
@@ -19,11 +21,12 @@ export default function App() {
     historicalData,
     loading,
     error,
+    errors,
     lastUpdated,
     refetch,
     stopAutoRefresh,
     startAutoRefresh,
-  } = useApiData(30000); // 30 segundos
+  } = useApiData(30000); // 30 seconds
 
   document.title = "Dollar tool";
 
@@ -54,17 +57,22 @@ export default function App() {
     );
   }
 
+  // If there's a critical error (all endpoints failed), show full error screen
   if (error) {
     return (
-      <div style={{ padding: "20px", textAlign: "center", color: "red" }}>
-        <h2>Error: {error}</h2>
-        <p>Could not load data. Please refresh the page.</p>
-      </div>
+      <ErrorDisplay
+        error={error}
+        onRetry={handleRefresh}
+        showDetails={process.env.NODE_ENV === "development"}
+      />
     );
   }
 
   return (
     <React.Fragment>
+      {/* Partial errors banner */}
+      <StatusBanner errors={errors} onRetry={handleRefresh} />
+
       <PriceList
         data={data}
         selectedItem={selectedItem}
@@ -73,7 +81,11 @@ export default function App() {
         criptoDolarPrice={criptoDolarPrice}
       />
 
-      <PriceCard selectedItem={selectedItem} dolarBluePrice={dolarBluePrice} />
+      <PriceCard
+        selectedItem={selectedItem}
+        dolarBluePrice={dolarBluePrice}
+        criptoDolarPrice={criptoDolarPrice}
+      />
 
       <PriceChart selectedItem={selectedItem} historicalData={historicalData} />
 
@@ -87,4 +99,8 @@ export default function App() {
       />
     </React.Fragment>
   );
+};
+
+export default function App() {
+  return <AppContent />;
 }

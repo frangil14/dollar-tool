@@ -31,15 +31,19 @@ const PriceList = ({
   const getPriceForPlatform = (platformName) => {
     switch (platformName) {
       case "Blue Dollar":
-        return (
-          (dolarBluePrice.dollar_blue_min + dolarBluePrice.dollar_blue_max) / 2
-        );
+        if (dolarBluePrice.dollar_blue_min && dolarBluePrice.dollar_blue_max) {
+          return (
+            (dolarBluePrice.dollar_blue_min + dolarBluePrice.dollar_blue_max) /
+            2
+          );
+        }
+        return null;
       case "Binance P2P":
-        return criptoDolarPrice.dollar_cripto_binance;
+        return criptoDolarPrice.dollar_cripto_binance || null;
       case "Lemon Cash":
-        return criptoDolarPrice.dollar_cripto_lemon;
+        return criptoDolarPrice.dollar_cripto_lemon || null;
       default:
-        return 0;
+        return null;
     }
   };
 
@@ -57,7 +61,7 @@ const PriceList = ({
           <div className={`type ${item.Platform_Class.toLowerCase()}`} />
         </div>
         <div className="price-container">
-          <div className="price">{formatCurrency(price)}</div>
+          <div className="price">{price ? formatCurrency(price) : "N/A"}</div>
           &nbsp;
         </div>
       </div>
