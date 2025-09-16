@@ -1,69 +1,44 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_compress import Compress
-from werkzeug.exceptions import HTTPException
 import flask
 import logging
 import os
-import simplejson
 
 from app.modules.cripto import routes as routes_dollar_cripto
 from app.modules.dollar_blue import routes as routes_dollar_blue
 from app.modules.historic_data import routes as routes_historic_data
 from app.modules.historic_data.views import write_historic_data
+from app.error_handlers import register_error_handlers
+from app.config import Config
 
-# -------------------------- Initialize logger file ------------------------------
 ROOT_PATH = os.getcwd()
 logger = logging.getLogger("dollar-tool")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 file_handler = logging.FileHandler(os.path.join(ROOT_PATH, 'logfile.log'))
-
-formatter = logging.Formatter(
-    '%(asctime)s : %(levelname)s : %(name)s : %(message)s')
+formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(name)s : %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-
-# -------------------------- Initialize Schedule for Cleaning ------------------------------
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=write_historic_data, trigger="interval", seconds=30, kwargs={'logger': logger})
+scheduler.add_job(
+    func=write_historic_data, 
+    trigger="interval", 
+    seconds=Config.SCHEDULER_INTERVAL_SECONDS, 
+    kwargs={'logger': logger}
+)
 scheduler.start()
-
 
 app = flask.Flask(__name__)
 app.config['COMPRESS_ALGORITHM'] = 'gzip'
 app.config['COMPRESS_LEVEL'] = 9
 Compress(app)
 
-# ---------------------------- Routes --------------------------------------------
+register_error_handlers(app, logger)
+
 routes_dollar_blue.add_routes_module(app, logger)
 routes_dollar_cripto.add_routes_module(app, logger)
 routes_historic_data.add_routes_module(app, logger)
-
-# ---------------------------- Start Parse Exception --------------------------------------------
-@app.errorhandler(Exception)
-def handle_exception(e):
-    """Return JSON instead of HTML for HTTP errors."""
-    # start with the correct headers and status code from the error
-    if isinstance(e, HTTPException):
-        response = e.get_response()
-    else:
-        response = HTTPException(e)
-        e.code = 500
-        e.name = 'Internal Server Error'
-        e.description = str(e)
-
-    response.data = simplejson.dumps({
-        "code": e.code or 500,
-        "name": e.name,
-        "description": e.description,
-    })
-
-    output = flask.Response(
-        response.data, status=e.code or 500, mimetype='application/json')
-    return output
-
-# ---------------------------- END Parse Exception --------------------------------------------
 
 
 @app.route('/', methods=['GET'])
