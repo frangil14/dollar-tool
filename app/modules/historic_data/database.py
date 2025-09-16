@@ -15,7 +15,7 @@ class HistoricDataDB:
         create_table_sql = """
         CREATE TABLE IF NOT EXISTS historic_data (
             timestamp DATETIME NOT NULL,
-            dolarBlue REAL NOT NULL,
+            dolarBlue REAL,
             dolarLemon REAL,
             dolarBinance REAL
         )
